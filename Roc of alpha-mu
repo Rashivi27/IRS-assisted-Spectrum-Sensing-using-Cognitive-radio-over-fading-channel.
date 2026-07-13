@@ -1,0 +1,23 @@
+clc; clear; 
+alpha = 2.0; mu_vals = [1, 2, 4]; 
+N = 5; snr_avg = 10^(10/10); 
+Pf = 0.01:0.02:1; 
+lambda = 2 * gaminv(1-Pf, N, 1);  
+  
+figure; hold on; 
+for mu = mu_vals 
+    Pd_avg = zeros(1, length(lambda));
+for i = 1:length(lambda) 
+        % Numerical averaging over alpha-mu PDF 
+        pdf_fun = @(x) (alpha * mu^mu * x.^(alpha*mu/2 - 1) / 
+(2*gamma(mu)*snr_avg^(alpha*mu/2))) ... 
+                  .* exp(-mu * (x.^(alpha/2) / snr_avg^(alpha/2))); 
+        pd_inst = @(x) 1 - ncx2cdf(lambda(i), 2*N, 2*x); 
+        Pd_avg(i) = integral(@(x) pd_inst(x) .* pdf_fun(x), 0, inf); 
+    end 
+    plot(Pf, Pd_avg, 'LineWidth', 2); 
+end 
+% title('ROC Curve: \alpha-\mu Fading'); 
+xlabel('P_f'); ylabel('Average P_d'); 
+legend('\mu=1', '\mu=2', '\mu=4', 'Location', 'SouthEast'); 
+grid on; 
