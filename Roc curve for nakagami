@@ -1,0 +1,29 @@
+clc; clear; 
+  
+N = 5;                  % Time-bandwidth product[cite: 1] 
+snr_avg_dB = 10;         
+snr_avg = 10^(snr_avg_dB/10); 
+m_vals = [1, 2, 4]; 
+Pf = 0.01:0.02:1;       % Prob. of False Alarm range[cite: 1] 
+  
+% Threshold lambda calculated from Pf using inverse Chi-square[cite: 1] 
+lambda = 2 * gaminv(1-Pf, N, 1);  
+  
+figure; hold on; 
+for m = m_vals 
+    Pd_avg = zeros(1, length(lambda)); 
+    for i = 1:length(lambda) 
+        % Numerical Integration: Average Pd = integral(Pd_inst * PDF)[cite: 
+1] 
+        pdf_fun = @(x) (m^m * x.^(m-1) / (gamma(m) * snr_avg^m)) .* exp(
+m*x/snr_avg); 
+        pd_inst = @(x) 1 - ncx2cdf(lambda(i), 2*N, 2*x); 
+        Pd_avg(i) = integral(@(x) pd_inst(x) .* pdf_fun(x), 0, inf); 
+    end 
+    plot(Pf, Pd_avg, 'LineWidth', 2); 
+end 
+  
+% title('Corrected ROC Curve over Nakagami-m Fading'); 
+xlabel('Probability of False Alarm (P_f)'); ylabel('Average Prob. of 
+Detection (P_d)'); 
+legend('m=1', 'm=2', 'm=4', 'Location', 'SouthEast'); grid on; 
