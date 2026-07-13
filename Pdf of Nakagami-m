@@ -1,5 +1,4 @@
-% Figure 1: PDF of Nakagami-m Fading 
-clc; clear; close all; 
+ clc; clear; close all; 
   
 m_vals = [1, 2, 4];      % Fading parameters (m=1 is Rayleigh) 
 snr_avg_dB = 10;         % Average SNR in dB 
