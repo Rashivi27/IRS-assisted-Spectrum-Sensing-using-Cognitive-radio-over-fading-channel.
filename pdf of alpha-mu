@@ -1,0 +1,21 @@
+clc; clear; close all; 
+  
+alpha = 2.5;             % Non-linearity parameter 
+mu_vals = [1, 2, 3];     % Cluster multiplicity 
+snr_avg_dB = 10; 
+snr_avg = 10^(snr_avg_dB/10); 
+gamma_range = 0:0.1:25; 
+  
+figure; hold on; 
+for mu = mu_vals 
+    % Corrected alpha-mu PDF formula 
+    term1 = (alpha * mu^mu) / (2 * gamma(mu) * snr_avg^(alpha * mu / 2)); 
+    term2 = gamma_range.^((alpha * mu / 2) - 1); 
+    term3 = exp(-mu * (gamma_range.^(alpha / 2) ./ snr_avg.^(alpha / 2))); 
+    pdf = term1 .* term2 .* term3; 
+    plot(gamma_range, pdf, 'LineWidth', 2); 
+end 
+  
+% title('PDF of \alpha-\mu Fading Channel'); 
+xlabel('Instantaneous SNR (\gamma)'); ylabel('PDF'); 
+legend('\mu=1', '\mu=2', '\mu=3'); grid on;
