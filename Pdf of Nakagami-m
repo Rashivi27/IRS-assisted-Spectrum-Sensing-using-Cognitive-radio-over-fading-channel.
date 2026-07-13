@@ -1,0 +1,19 @@
+% Figure 1: PDF of Nakagami-m Fading 
+clc; clear; close all; 
+  
+m_vals = [1, 2, 4];      % Fading parameters (m=1 is Rayleigh) 
+snr_avg_dB = 10;         % Average SNR in dB 
+snr_avg = 10^(snr_avg_dB/10); 
+gamma_range = 0:0.1:30;  % SNR range for plotting 
+  
+figure; hold on; 
+for m = m_vals 
+    % Standard Nakagami-m PDF formula (Eq. 1 corrected) 
+    pdf = (m^m * gamma_range.^(m-1)) ./ (gamma(m) * snr_avg^m) .* ... 
+          exp(-m * gamma_range / snr_avg); 
+    plot(gamma_range, pdf, 'LineWidth', 2); 
+end 
+  
+title('PDF of Nakagami-m Fading Channel'); 
+xlabel('Instantaneous SNR (\gamma)'); ylabel('f_{\gamma}(\gamma)'); 
+legend('m=1 (Rayleigh)', 'm=2', 'm=4'); grid on; 
